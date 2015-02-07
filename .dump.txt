@@ -1,0 +1,85 @@
+<!-- SIGNUP FORM -->
+<form ng-submit="submitSignupForm()" id="sign-up-form" class="form-signin" name="signup">
+  <h2 class="form-signin-heading">Create an account</h2>
+  <div class="row">
+
+    <!-- N A M E -->
+
+    <!-- checking whether the form "signup" with the "name" property is both $invalid AND $dirty.  If it is
+    insert the "has-error" class on the input field (i.e. insert a red border around the input field)
+    -->
+    <div class="control-group form-group col-md-12"
+         ng-class="{'has-error':signup.name.$invalid &&
+                              signup.name.$dirty}">
+      <label>Your full name</label>
+
+      <!-- For this input field make it required, and have a max length of 25 -->
+      <input type="text" class="form-control" placeholder="e.g. Nikola Tesla" name="name" ng-model="signupForm.name" ng-maxlength="50" required>
+
+      <!-- Also, if signup.name.$dirty is true, show the message depending upon the particular properties truthiness (e.g. required
+      and/or maxlength) -->
+          <span class="help-block has-error" ng-if="signup.name.$dirty">
+            <span ng-show="signup.name.$error.required">Name is required.</span>
+            <span ng-show="signup.name.$error.maxlength">The name cannot be more than 50 characters.</span>
+          </span>
+    </div>
+
+    <!-- T I T L E -->
+
+    <div class="control-group form-group col-md-12"
+         ng-class="{'has-error':signup.favan.$invalid &&
+                                signup.favan.$dirty}">
+      <label>Your favourite animal</label>
+      <input type="text" class="form-control" placeholder="e.g. Cats" name="favan" ng-model="signupForm.title" ng-maxlength="50" required>
+          <span class="help-block has-error" ng-if="signup.favan.$dirty">
+            <span ng-show="signup.favan.$error.required">We need to know!</span>
+            <span ng-show="signup.favan.$error.maxlength">Even Micropachycephalosaurus has less than 50 characters!</span>
+          </span>
+    </div>
+
+    <!-- E M A I L -->
+
+    <div class="control-group form-group col-md-12"
+         ng-class="{'has-error':signup.email.$invalid &&
+                              signup.email.$dirty}">
+      <label>Your email address</label>
+      <input type="email" class="form-control" placeholder="nikola@tesla.com" name="email" ng-model="signupForm.email" required >
+          <span class="help-block has-error" ng-if="signup.email.$dirty">
+            <span ng-show="signup.email.$error.required">Email address is required.</span>
+            <span ng-show="signup.email.$error.email">Not a valid email address.</span>
+          </span>
+    </div>
+
+    <!-- P A S S W O R D -->
+
+    <div class="control-group form-group col-md-6"
+         ng-class="{'has-error':signup.password.$invalid &&
+                              signup.password.$dirty}">
+      <label>Choose a password</label>
+      <!-- Added the compareTo directive that compares the passowrds -->
+      <input type="password" class="form-control" placeholder="at least 6 characters" name="password" ng-model="signupForm.password" id="password" required ng-minlength="6" compare-to="signupForm.confirmPassword" >
+          <span class="help-block has-error" ng-if="signup.password.$dirty">
+            <span ng-show="signup.password.$error.required">Password is required.</span>
+            <span ng-show="signup.password.$error.minlength">Password must be at least 6 characters.</span>
+          </span>
+    </div>
+
+    <!-- C O N F I R M  P A S S W O R D -->
+
+    <div class="control-group form-group col-md-6">
+      <label>Re-enter your password</label>
+      <input type="password" class="form-control" placeholder="one more time" name="confirmation" ng-model="signupForm.confirmPassword" required>
+          <span class="help-block has-error" ng-if="signup.confirmation.$dirty">
+            <span ng-show="signup.password.$error.compareTo">Password must match.</span>
+            <span ng-show="signup.confirmation.$error.required">Confirmation password is required.</span>
+          </span>
+    </div>
+  </div>
+
+  <br/>
+
+
+  <input class="btn btn-primary btn-lg btn-block" type="submit" ng-disabled="signup.$invalid">
+
+  <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+</form>
