@@ -1,8 +1,12 @@
 <section class="row text-center">
-  <% if(flash && flash.err){ %>
+ <%
+      var flash = _.clone(req.flash('err'));
+      if (flash.length > 0) { //Check for error existence
+      console.log(flash);
+ %>
   <ul class="alert alert-success">
-    <% Object.keys(flash.err).forEach(function(err){%>
-    <li><%- JSON.stringify(flash.err[error]) %></li>
+    <% Object.keys(flash).forEach(function(err){%>
+    <li><%- JSON.stringify(flash[err]) %></li>
     <% }); %>
   </ul>
   <% } %>

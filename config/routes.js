@@ -35,8 +35,11 @@ module.exports.routes = {
   'GET /test': {
     view: 'main'
   },
-  'GET /':{
-    view: 'signup'
+  'GET /': '/signup',
+
+  'GET /signup':{
+    controller: 'UserController',
+    action: 'signup'
   }
   /***************************************************************************
   *                                                                          *
