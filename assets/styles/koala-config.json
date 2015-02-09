@@ -2,9 +2,9 @@
 {
 	// The mappings of source directory and output directory
 	"mappings": [
-		// {	
-		// 	"src": "F:\User data\Documents\My Web Sites\webflow\assets\styles",
-		// 	"dest": "F:\User data\Documents\My Web Sites\webflow\assets\styles"
+		// {
+		// 	"src": "F:\User data\Documents\My Web Sites\sandbox\assets\styles",
+		// 	"dest": "F:\User data\Documents\My Web Sites\sandbox\assets\styles"
 		// }
 	],
 
