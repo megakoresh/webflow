@@ -260,7 +260,64 @@ module.exports = function(grunt) {
 			files: {
 				'views/**/*.jade': ['.tmp/public/jst.js']
 			}
-		}
+		},
+		devPaperscript: {
+        options: {
+            startTag: '<!--SCRIPTS-->',
+            endTag: '<!--SCRIPTS END-->',
+            fileTmpl: '<script type="text/paperscript" src="%s"></script>',
+            appRoot: '.tmp/public'
+        },
+        files: {
+            '.tmp/public/**/*.html': require('../pipeline').paperFilesToInject,
+            'views/**/*.html': require('../pipeline').paperFilesToInject,
+            'views/**/*.ejs': require('../pipeline').paperFilesToInject
+        }
+    },
+
+    devPaperscriptRelative: {
+        options: {
+            startTag: '<!--SCRIPTS-->',
+            endTag: '<!--SCRIPTS END-->',
+            fileTmpl: '<script type="text/paperscript" src="%s"></script>',
+            appRoot: '.tmp/public',
+            relative: true
+        },
+        files: {
+            '.tmp/public/**/*.html': require('../pipeline').paperFilesToInject,
+            'views/**/*.html': require('../pipeline').paperFilesToInject,
+            'views/**/*.ejs': require('../pipeline').paperFilesToInject
+        }
+    },
+
+    prodPaperscript: {
+        options: {
+            startTag: '<!--SCRIPTS-->',
+            endTag: '<!--SCRIPTS END-->',
+            fileTmpl: '<script type="text/paperscript" src="%s"></script>',
+            appRoot: '.tmp/public'
+        },
+        files: {
+            '.tmp/public/**/*.html': require('../pipeline').paperFilesToInject,
+            'views/**/*.html': require('../pipeline').paperFilesToInject,
+            'views/**/*.ejs': require('../pipeline').paperFilesToInject
+        }
+    },
+
+    prodPaperscriptRelative: {
+        options: {
+            startTag: '<!--SCRIPTS-->',
+            endTag: '<!--SCRIPTS END-->',
+            fileTmpl: '<script type="text/paperscript" src="%s"></script>',
+            appRoot: '.tmp/public',
+            relative: true
+        },
+        files: {
+            '.tmp/public/**/*.html': require('../pipeline').paperFilesToInject,
+            'views/**/*.html': require('../pipeline').paperFilesToInject,
+            'views/**/*.ejs': require('../pipeline').paperFilesToInject
+        }
+    },
 	});
 
 	grunt.loadNpmTasks('grunt-sails-linker');

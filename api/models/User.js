@@ -8,6 +8,7 @@
 module.exports = {
 
   schema: true,
+  connection: 'localMaria',
 
   attributes: {
 
@@ -31,19 +32,10 @@ module.exports = {
       unique: true
     },
 
-    hash: {
-      type: "string"
-      //required: true
+    password: {
+      type: "string",
+      required: true
     }
-  }/*,
-  toJSON: function(){ //Override the user response to prevent sensitive data from coming back.
-    var obj = this.toObject();
-    delete obj.password;
-    delete obj.confirmation;
-    delete obj._csrf;
-    delete obj.encryptedPassword;
-    return obj;
-  }*/
-
+  }
 };
 

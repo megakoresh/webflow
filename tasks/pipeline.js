@@ -18,6 +18,10 @@ var cssFilesToInject = [
   'styles/**/*.css'
 ];
 
+//Paperscript
+var paperFilesToInject = [
+	'paperscript/**/*.js'
+];
 
 // Client-side javascript files to inject in order
 // (uses Grunt-style wildcard/glob/splat expressions)
@@ -28,7 +32,7 @@ var jsFilesToInject = [
 
   // Dependencies like jQuery, or Angular are brought in here
   'js/dependencies/angular.min.js',
-  'js/dependencies/paper-full.min.js',
+  'js/dependencies/assets/paperscript/paper-full.min.js',
   'js/dependencies/**/*.js',
 
 

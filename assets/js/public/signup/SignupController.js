@@ -1,1 +1,3 @@
-angular.module('SignupModule').controller('SignupController', function(){});
+angular.module('SignupModule').controller('SignupController', function(params){
+	
+});
