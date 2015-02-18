@@ -20,7 +20,7 @@ var cssFilesToInject = [
 
 //Paperscript
 var paperFilesToInject = [
-	'paperscript/**/*.js'
+  'paperscript/**/*.js'
 ];
 
 // Client-side javascript files to inject in order
@@ -32,7 +32,7 @@ var jsFilesToInject = [
 
   // Dependencies like jQuery, or Angular are brought in here
   'js/dependencies/angular.min.js',
-  'js/dependencies/assets/paperscript/paper-full.min.js',
+  //'js/dependencies/assets/paperscript/paper-full.min.js',
   'js/dependencies/**/*.js',
 
 
@@ -65,6 +65,9 @@ module.exports.cssFilesToInject = cssFilesToInject.map(function(path) {
   return '.tmp/public/' + path;
 });
 module.exports.jsFilesToInject = jsFilesToInject.map(function(path) {
+  return '.tmp/public/' + path;
+});
+module.exports.paperFilesToInject = paperFilesToInject.map(function(path) {
   return '.tmp/public/' + path;
 });
 module.exports.templateFilesToInject = templateFilesToInject.map(function(path) {

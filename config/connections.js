@@ -40,13 +40,6 @@ module.exports.connections = {
   * Run: npm install sails-mysql                                             *
   *                                                                          *
   ***************************************************************************/
-  localMaria: {
-    adapter: 'sails-mysql',
-    host: 'localhost',
-    user: 'root',
-    password: 'amaze',
-    database: 'users'
-  },
 
   /***************************************************************************
   *                                                                          *

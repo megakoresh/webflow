@@ -5,6 +5,7 @@ module.exports = function (grunt) {
 		'uglify',
 		'cssmin',
 		'sails-linker:prodJs',
+    'sails-linker:prodPaperscript',
 		'sails-linker:prodStyles',
 		'sails-linker:devTpl',
 		'sails-linker:prodJsJade',
