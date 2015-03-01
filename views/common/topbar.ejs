@@ -1,0 +1,39 @@
+<!-- Creates the navbar -->
+<nav class="navbar navbar-default navbar-inverse">
+
+  <!-- This creates the mechanism for the collapse button -->
+  <button type="button" class="navbar-toggle" data-toggle="collapse" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
+
+    <!-- This controls the number of lines in the image when the nav collapse -->
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+
+  <!-- This is the brand on the left-hand side. -->
+  <a class="navbar-brand" href="/#">The #1 useless website!</a>
+  <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
+
+    <!-- LOGIN FORM -->
+    <form ng-submit="submitLoginForm()" class="navbar-form navbar-right">
+
+      <!-- E M A I L -->
+      <div class="form-group">
+        <input ng-model="loginForm.email" type="text" placeholder="Email" name="email" class="form-control">
+      </div>
+
+      <!-- P A S S W O R D -->
+      <div class="form-group">
+        <input ng-model="loginForm.password" type="password" placeholder="Password" name="password" class="form-control">
+      </div>
+
+      <!-- S U B M I T -->
+      <button type="submit" class="btn btn-success">
+        <span ng-show="!loginForm.loading">Sign in</span>
+        <span ng-show="loginForm.loading" class="fa fa-spinner"></span>
+        <!--<span ng-show="loginForm.loading">Signing up...</span>-->
+      </button>
+      <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+    </form>
+  </div>
+</nav>

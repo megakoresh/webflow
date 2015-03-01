@@ -8,14 +8,15 @@
 module.exports = {
 
   schema: true,
-  connection: 'remoteSQL',
+  connection: 'localMaria',
 
   attributes: {
 
     // The user's name or callsign
     name: {
       type: 'string',
-      required: true
+      required: true,
+      unique: true
     },
 
     //Favourite animal
@@ -43,13 +44,17 @@ module.exports = {
     bcrypt.genSalt(10, function(err, salt) {
       if (err) return next(err);
 
+      bcrypt.hash(attrs.confirmation, salt, function(err, hash) {
+        if (err) return next(err);
+        attrs.confirmation = hash;
+      });
       bcrypt.hash(attrs.password, salt, function(err, hash) {
         if (err) return next(err);
-
-        attrs.password = hash;
-        next();
+        attrs.password = hash;    
+	return next();    
       });
     });
+    
   }
 };
 

@@ -83,3 +83,138 @@
 
   <input type="hidden" name="_csrf" value="<%= _csrf %>" />
 </form>
+
+if (shape.data.connectors.length > 0){
+    shape.data.connectors.forEach(function(connector){
+      var sc = connector.data.bound.point = connector.data.source.bounds.center;
+      var tg = connector.data.target.bounds.center;
+      var bound = connector.data.bound;
+      bound.size = connector.data.target - connector.data.source;
+
+      connector.segments[0].point = sc;
+      connector.segments[0].handleIn = null;
+      connector.segments[0].handleOut = bound.leftCenter - sc;
+
+      connector.segments[1].point = tg;
+      connector.segments[1].handleIn = bound.rightCenter - tg;
+      connector.segments[1].handleOut = null;
+
+      var intersection = connector.getIntersections(connector.data.target)[0];
+
+      var offset = connector.getOffsetOf(intersection.point);
+      var offset2 = offset - 13;
+
+      var normal = connector.getNormalAt(offset2);
+      normal.length = 5;
+      var point = connector.getPointAt(offset2);
+
+      connector.arrow.segments = [
+        [intersection.point],
+        [point + normal],
+        [point - normal]
+      ]
+    });
+  }
+
+
+function draw(nodes, chartdata){
+  function makeRectangle(topLeft, size, cornerSize, colour) { //Create the visual representation of the data node
+    var rectangle = new Rectangle(topLeft, size);
+    var cornerSize = cornerSize;
+    var path = new Path.RoundRectangle(rectangle, cornerSize);
+    path.fillColor = colour;
+    return path;
+  }
+  nodes.forEach(function(node){ //for each node data entry
+    var point = new Point(node.x,node.y); //make a PaperJS point for placement
+    var size = new Size(node.width, node.height); //make a PaperJS size object
+    var c = new Size(8,8); //Size object for corner radius
+    var shape = makeRectangle(point,size,c,node.color); //Pass to the object instantiating function
+    shape.data = { //Store arbitrary data for programming reference.
+      ID: node.ID,
+      label: node.label,
+      text: node.text,
+      connectors: []
+    }
+    shapes.push(shape); //Store reference for updating
+    if (node.targets.length > 0){ //If it connects to something...
+      var targetPair = [shape, node.targets]; //...interpret connections and
+      connections.push(targetPair);//store them
+      //Note that targets are stored as IDs of their elements, but source stored as a reference to the canvas object.
+    }
+  });
+  this.connect = function(connections){ //Connect the nodes
+    connections.forEach(function(pair){ //For each source-targets pair
+      var source = pair[0];
+      var sourceCenter = source.bounds.center; //Find center point of source node
+      var targetIDs = pair[1];
+      var targetShapes = [];
+      targetIDs.forEach(function(targetIDs){ //For each target ID
+        var shape = project.getItem({
+          data: {
+            ID: targetIDs //Find the canvas object with appropriate data we wrote when creating them.
+          }
+        });
+        targetShapes.push(shape); //Store references.
+      });
+      targets = _.clone(targetShapes); //Clone for safety
+      targets.forEach(function(target){ //For each target object
+        var connector, seg1, seg2, conBound, h1, h2; //Ton of vars to generate smooth beziers
+        var targetCenter = target.bounds.center; //Find the center of target
+
+        conBound = new Rectangle(sourceCenter,targetCenter); //Bounds of the curve
+        h1 = conBound.leftCenter - sourceCenter; //Vertical left handler
+        h2 = conBound.rightCenter - targetCenter; //Vertical right handler
+
+        seg1 = new Segment(sourceCenter,null,h1); //Generate segments from handlers
+        seg2 = new Segment(targetCenter,h2,null);
+
+        connector = new Path(seg1,seg2); //Generate curve from segments
+        connector.strokeColor = "black"; //Style that shit
+        connector.data = {
+          'name': "Connector",
+          'source': source,
+          'target': target,
+          'bound': conBound,
+          'arrow': undefined
+        };
+        connector.sendToBack();
+        connectors.push(connector); //Store that shit
+        target.data.connectors.push(connector);
+      });
+    })
+  }
+  this.connect(connections);
+  connectors.forEach(function(connector){
+    var intersection = connector.getIntersections(connector.data.target)[0];
+
+    var arrowLength = 13;
+    var arrowWidth = 5;
+
+    var offset = connector.getOffsetOf(intersection.point);
+
+    var offset2 = offset - arrowLength;
+
+    var normal = connector.getNormalAt(offset2);
+    normal.length = arrowWidth;
+    var point = connector.getPointAt(offset2);
+
+    var triangle = new Path.RegularPolygon({
+      segments: [
+        [intersection.point],
+        [point + normal],
+        [point - normal]
+      ],
+      closed: true,
+      fillColor: 'black'
+    });
+    connector.data.arrow = triangle;
+  });
+}
+draw(nodes,chartdata);
+
+function update(shape, event){
+  shape.data.connectors.forEach(function(connector){
+    connector.delta = event.delta;
+  })
+}

@@ -18,8 +18,6 @@
  * size = Size(width,height)
  * */
 module.exports = {
-  retrieve: function(chartID){
-    return argarray;
-  }
+
 };
 

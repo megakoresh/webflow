@@ -6,9 +6,20 @@
 */
 
 module.exports = {
-
+  schema: true,
   attributes: {
-
+    nodes: {
+      collection: 'Node',
+      via: 'Chart'
+    },
+    label: {
+      type: 'string',
+      defaultsTo: 'A brand new diagram'
+    },
+    description: {
+      type: 'string',
+      defaultsTo: ''
+    }
   }
 };
 
