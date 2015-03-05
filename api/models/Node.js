@@ -10,7 +10,8 @@ module.exports = {
   attributes: {
     Chart: {
       required: true,
-      model: 'Chart'
+      model: 'Chart',
+      defaultsTo: 1
     },
     x: {
       required: true,
@@ -43,14 +44,11 @@ module.exports = {
       defaultsTo: "Node text"
     },
     label: {
-      required: true,
       type: 'string',
       defaultsTo: "Node label"
     },
     targets: {
-      required: true,
-      type: 'array',
-      defaultsTo: []
+      type: 'array'
     }
   }
 };
