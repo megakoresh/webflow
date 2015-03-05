@@ -26,6 +26,11 @@ function invertColor(hexTripletColor) { //invert color for text
 var xhr = $.get('Node/findAllByChart', { //Make a call to fetch the data
   'Chart': 1
 }).done(function (nodes) { //once done, commence the wall of code
+  for(var n=0; n<nodes.length; n++) {
+    if (nodes[n].targets[0] === "") {
+      nodes[n].targets = [];
+    }
+  }
   data = nodes;
   loaded = true;
   if (paperEl) {
@@ -174,14 +179,26 @@ xhr.always(function(){
   });
   //END EVENT TRIGGERS
   $("<button onclick='console.log(data)'>See data</button>").insertAfter("#save");
-  $('#save').click(function () {
+  var savebutton = $('#save');
+  savebutton.click(function () {
     $("code").remove();
     data.forEach(function (node) {
       if (csrf) node._csrf = csrf;
       if(node.targets.length == 0) node.targets.push(null); //due to ajax being stupid, it won't send empty arrays. So I use this hack and do serverside check to empty the record.
       $.post('Node/saveOne', node).done(function (response) {
+        if(response.oldId){ //handle ID discrepancies, if any
+          var cell = graph.getCell(''+response[i].oldId);
+          if(cell){
+            cell.id = ''+response[i].id+'';
+          }
+          if(connections.hasOwnProperty(''+response[i].oldId)){
+            connections[''+response[i].id] = response[i].oldId;
+            delete connections[''+response[i].oldId];
+          }
+        }
+        /*THIS IS FOR LATER. When I start sending them all in one request.
         for (var i=0; i<response.length; i++) {
-          $("<code>" + JSON.stringify(response[i]) + "<code>").insertAfter("#paper");
+          console.log(response[i]);
           if(response[i].oldId){
             var cell = graph.getCell(''+response[i].oldId);
             if(cell){
@@ -192,9 +209,14 @@ xhr.always(function(){
               delete connections[''+response[i].oldId];
             }
           }
-        }
+        }*/
       });
     });
+    $("#save").animate({
+      'background-color':'#7BD389'
+    },500).animate({
+      'background-color':'#286090'
+    },500);
   });
   $("#newNode").click(function(){
     var newtext = $("#description").val();
