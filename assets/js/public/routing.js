@@ -112,23 +112,34 @@ var xhr = $.get('Node/findAllByChart', { //Make a call to fetch the data
     });//the usability of this app is measured in the frequency of usage of this button.
 
     //DO YOU EVEN PAN BRO
-    var pan;
+    var pan, dropX, dropY;
     var paperCont = document.getElementById('paper-container'); //get container
     var body = $('body');
+
     paper.on('blank:pointerdown', function(event) {//register panning start
+      if(event.force) {
+        //console.log(event);
+        dropX = event.clientX;
+        dropY = event.clientY;
+      }
       pan=true; //set panning flag to true
     });
 
-    body.on('mousemove', function(event){ //on mouse move...
+    body.on('mousemove touchmove', function(event){ //on mouse move...
       if(pan) {//if in pan mode
         //console.log(event);
         paperCont.scrollTop -= event.originalEvent.movementY;
         paperCont.scrollLeft -= event.originalEvent.movementX;
+        if(event.type == 'touchmove'){ //on touch this is a bit weird - it's as if the values are too extreme. I nerf them to have softer panning.
+          paperCont.scrollTop += (dropY-event.originalEvent.touches[0].clientY)/2;
+          paperCont.scrollLeft += (dropX-event.originalEvent.touches[0].clientX)/2;
+        }
       }
     });
 
-    body.on('mouseup', function(event){ //on mouse up clear flag.
+    body.on('mouseup touchend', function(event){ //on mouse up clear flag.
       pan = false;
+      //console.log('touch');
     });
     //END PANNING LOGIC
 
@@ -194,6 +205,7 @@ var xhr = $.get('Node/findAllByChart', { //Make a call to fetch the data
 
     graph.addCells(shapenodes); //add nodes
     graph.addCell(links); //add links
+    paper.fitToContent();
     //END GRAPHICS FROM DATA
   }
   //END WALL OF CODE
