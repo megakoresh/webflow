@@ -218,3 +218,19 @@ function update(shape, event){
     connector.delta = event.delta;
   })
 }
+
+
+/*THIS IS FOR LATER. When I start sending them all in one request.
+        for (var i=0; i<response.length; i++) {
+          console.log(response[i]);
+          if(response[i].oldId){
+            var cell = graph.getCell(''+response[i].oldId);
+            if(cell){
+              cell.id = ''+response[i].id+'';
+            }
+            if(connections.hasOwnProperty(''+response[i].oldId)){
+              connections[''+response[i].id] = response[i].oldId;
+              delete connections[''+response[i].oldId];
+            }
+          }
+        }*/

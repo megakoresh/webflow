@@ -1,21 +1,28 @@
-<div id="paper"></div>
-<footer class="row">
-<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#newnode">
-  New node (prototype)
-</button><button id="save" class="btn btn-primary btn-lg">Save diagram</button><br>
-<comment class="col-xs-12 col-md-5 col-lg-5">
-  You can drag the shapes around by tapping or clicking on text for now (maybe I will add separate handlers), add and remove links (figure it out, it's easy) and (hopefully) save the diagram.
-  Node insertion, even if it works, will be disabled because I haven't quite figured out the security features of Sails yet and don't know how to implement them.
-  TODO:
-  <ul>
-    <li>Drag and drop UI for nodes</li>
-    <li>Edit text inside nodes on double-click/tap(this is gonna be tricky...)</li>
-    <li>Ajax saving feedback (for this I need to figure out proper sockets setup)</li>
-    <li>Zoom and panning</li>
-    <li>Color editing</li>
-  </ul>
-</comment></footer>
+  <div id="paper-container" class="row row-offcanvas row-offcanvas-right">
+    <div id="paper"></div>
+  </div>
 
+
+  <footer class="row">
+    <button class="btn btn-default btn-sm btn-block" type="button" data-toggle="collapse" data-target="#info" aria-expanded="false" aria-controls="collapseExample">
+      More info
+    </button>
+  <article id='info' class="collapse col-xs-12 well">
+    You can drag the shapes around by tapping or clicking on text for now (maybe I will add separate handlers), add and remove links (figure it out, it's easy) and (hopefully) save the diagram.
+    Node insertion, even if it works, will be disabled because I haven't quite figured out the security features of Sails yet and don't know how to implement them.
+    <br><h4>TODO:</h4>
+    <ul class="panel">
+      <li>Drag and drop UI for nodes</li>
+      <li>Edit text inside nodes on double-click/tap(this is gonna be tricky...)</li>
+      <li>Ajax saving feedback (for this I need to figure out proper sockets setup)</li>
+      <li>Zoom and panning</li>
+      <li>Color editing</li>
+    </ul>
+  </article>
+  </footer>
+
+
+<!--form for creating new node (temp, I will make it into a drag and drop interface when I learn enough about this JointJS api)-->
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createNewNode" aria-hidden="true" id="newnode">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -23,9 +30,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="exampleModalLabel">Create new node</h4>
       </div>
-
       <div class="modal-body">
-
           <div class="form-group">
             <label for="lable">Label</label>
             <input type="text" class="form-control" id="label" placeholder="Your node's label" name="label">
@@ -36,9 +41,7 @@
                       name="text"></textarea>
           </div>
           <button class="btn btn-default" id="newNode">Make node</button>
-
       </div>
-
     </div>
   </div>
 </div>

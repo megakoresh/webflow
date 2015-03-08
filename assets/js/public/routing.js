@@ -5,43 +5,42 @@
 
 /*TODO: (optional but advised) Make a map from shape ID to index in data array.
  Would make for easier searching and improve performance for larger charts (maybe...)*/
-var data;
-var paperEl = $("#paper");
+var data, graph;
+var paperEl = document.getElementById("paper");
 var shapenodes = []; //store node structures
 var connections = {}; //store connection pairs
 var links = []; //store drawn connectors
 
-function invertColor(hexTripletColor) { //invert color for text
+//this here function is very useful for any visual application!
+function invertColor(hexTripletColor) { //invert color for text so it's visible no matter what
   var color = hexTripletColor;
-  color = color.substring(1);           // remove #
-  color = parseInt(color, 16);          // convert to integer
-  color = 0xFFFFFF ^ color;             // invert three bytes
-  color = color.toString(16);           // convert to hex
-  color = ("000000" + color).slice(-6); // pad with leading zeros
-  color = "#" + color;                  // prepend #
+  color = color.substring(1);
+  color = parseInt(color, 16);
+  color = 0xFFFFFF ^ color;
+  color = color.toString(16);
+  color = ("000000" + color).slice(-6);
+  color = "#" + color;
   return color;
 }
-
-
+//MAIN LOGIC
 var xhr = $.get('Node/findAllByChart', { //Make a call to fetch the data
-  'Chart': 1
+  'Chart': 1 //this will be stored in session when i implement user login. For now - fixed.
 }).done(function (nodes) { //once done, commence the wall of code
-  for(var n=0; n<nodes.length; n++) {
+  for(var n=0; n<nodes.length; n++) { //this is to prevent possible compatibility issues with backend services
     if (nodes[n].targets[0] === "") {
       nodes[n].targets = [];
     }
   }
   data = nodes;
-  loaded = true;
-  if (paperEl) {
-    graph = new joint.dia.Graph;
+  if (paperEl) { //if correct page
+    graph = new joint.dia.Graph; //make graph
     var paper = new joint.dia.Paper({ //set up paper
       el: paperEl,
-      width: window.innerWidth,
-      height: window.innerHeight / 1.5, //we are very responsive like that LOL
+      width: $("#paper-container").width(),
+      height: $("#paper-container").height(), //we are very responsive like that LOL
       gridSize: 1,
       model: graph,
-      defaultLink: new joint.dia.Link({
+      defaultLink: new joint.dia.Link({ //default style for links
         'smooth': true,
         attrs: {
           '.connection': {'stroke-width': 3},
@@ -55,6 +54,92 @@ var xhr = $.get('Node/findAllByChart', { //Make a call to fetch the data
         return (magnetS !== magnetT);
       }
     });
+
+    //PAPER UI INTERACTIONS
+    $("#center").click(function(){
+      paper.scaleContentToFit();
+    });
+
+    $("#scale").click(function(){
+      paper.fitToContent();
+    });
+
+    $(window).on('orientationchange resize', function(){
+      paper.fitToContent();
+    });
+
+    //TODO: somehow get the zoom to work (no idea how)
+
+    $('#paper').bind('mousewheel DOMMouseScroll', function(e) { //prevent global scrolling when inside paper
+      var scrollTo = null;
+
+      if (e.type == 'mousewheel') {
+        scrollTo = (e.originalEvent.wheelDelta * -1);
+      }
+      else if (e.type == 'DOMMouseScroll') {
+        scrollTo = 40 * e.originalEvent.detail;
+      }
+
+      if (scrollTo) {
+        e.preventDefault();
+        $(this).scrollTop(scrollTo + $(this).scrollTop());
+      }
+    });
+
+    paperEl.addEventListener('mousewheel', function(event){
+    //I have no idea how the fuck does this work. Whatever I do, the zoom doesn't work properly.
+    //The creator of the library evidently made it really hard to implement so he could push his
+    //enterprise product (https://groups.google.com/forum/#!msg/jointjs/V_xU2UQFkGk/kzblMKw5ak8J)
+      var delta = event.wheelDelta;
+      var scale = 1;
+      var x = event.clientX;
+      var y = event.clientY;
+      if(delta>0) scale += 0.2;
+      if(delta<0) scale -= 0.2;
+      paper.scale(scale,scale,x,y);
+    });
+
+    paper.on('scale',function(evt){
+      //whatever zooming in goes on, it will be done on render SVG container: viewport
+      //for that reason, if we still want to have panning enabled, the paper has to be
+      //made the size of the viewport after each zooming action is done
+      paper.fitToContent();
+    });
+
+    $('#reset').click(function(){ //the most useful one.
+      paper.scale(1,1);
+      paper.setDimensions($("#paper-container").width(), $("#paper-container").height())
+    });//the usability of this app is measured in the frequency of usage of this button.
+
+    //DO YOU EVEN PAN BRO
+    var pan;
+    var paperCont = document.getElementById('paper-container'); //get container
+    var body = $('body');
+    paper.on('blank:pointerdown', function(event) {//register panning start
+      pan=true; //set panning flag to true
+    });
+
+    body.on('mousemove', function(event){ //on mouse move...
+      if(pan) {//if in pan mode
+        //console.log(event);
+        paperCont.scrollTop -= event.originalEvent.movementY;
+        paperCont.scrollLeft -= event.originalEvent.movementX;
+      }
+    });
+
+    body.on('mouseup', function(event){ //on mouse up clear flag.
+      pan = false;
+    });
+    //END PANNING LOGIC
+
+    paper.on('cell:pointermove', function(event,x,y){ //on member move adjust paper size
+      paper.fitToContent();//this works similar to strategy games - move cursor to size, view pans to side.
+      //the problem is the sensitivity area of this is very small. I may have to make this logic manual somehow
+      //if the JointJS docs were better I might have done it already
+    });
+    //END PAPER UI INTERACTIONS
+
+    //CONSTRUCT GRAPHICS FROM DATA
     for (var i = 0; i < nodes.length; i++) { //for all nodes
       var wraptext = joint.util.breakText(nodes[i].text, {width: nodes[i].width - 20}); //break text to fit node width
       var newNode = new joint.shapes.basic.Rect({
@@ -109,11 +194,17 @@ var xhr = $.get('Node/findAllByChart', { //Make a call to fetch the data
 
     graph.addCells(shapenodes); //add nodes
     graph.addCell(links); //add links
+    //END GRAPHICS FROM DATA
   }
+  //END WALL OF CODE
 });
+//END MAIN LOGIC
 
 //EVENT TRIGGERS
-xhr.always(function(){
+xhr.always(function(){ //send callback for data fetching
+  //So graph is basically a data holder - it doesn't render anything.
+  //For that purpose I use it's events to trigger data changes in the model.
+  //This is also the reason it's handlers are attached after the paper's
   graph.on('change:source change:target', function (link) { //Make new connections and be social
     var sourceId = link.get('source').id;
     var targetId = link.get('target').id;
@@ -160,10 +251,10 @@ xhr.always(function(){
     }
   });
 
-  graph.on('add', function (cell) {
+  graph.on('add', function (cell) { //on cell addition...
     console.log(cell);
-    if (cell.attributes.props && cell.attributes.props.node) {
-      var celldata = {
+    if (cell.attributes.props && cell.attributes.props.node) { //if it's a node cell (i.e. not a link)
+      var celldata = { //make data
         x: cell.attributes.position.x,
         y: cell.attributes.position.y,
         width: cell.attributes.size.width,
@@ -174,54 +265,53 @@ xhr.always(function(){
         targets: [],
         id: cell.id
       };
-      data.push(celldata);
+      data.push(celldata); //and push it to the object
     }
   });
-  //END EVENT TRIGGERS
-  $("<button onclick='console.log(data)'>See data</button>").insertAfter("#save");
+//END EVENT TRIGGERS
+
+
+  //$("<button onclick='console.log(data)'>See data</button>").insertAfter("#save"); //debug thing
+
+  //SAVING MECHANICSM
   var savebutton = $('#save');
-  savebutton.click(function () {
-    $("code").remove();
-    data.forEach(function (node) {
-      if (csrf) node._csrf = csrf;
-      if(node.targets.length == 0) node.targets.push(null); //due to ajax being stupid, it won't send empty arrays. So I use this hack and do serverside check to empty the record.
+  savebutton.click(function () { //
+    $("code").remove(); //debug thing, never mind this.
+    var ok = 0;
+    data.forEach(function (node) { //for all data entries (temp, I will send full array and do the separation serverside later)
+      if (csrf) node._csrf = csrf; //embed csrf token
+      if (node.targets.length == 0) node.targets.push(null); //due to ajax being stupid, it won't send empty arrays. So I use this hack and do serverside check to empty the record.
       $.post('Node/saveOne', node).done(function (response) {
-        if(response.oldId){ //handle ID discrepancies, if any
-          var cell = graph.getCell(''+response[i].oldId);
-          if(cell){
-            cell.id = ''+response[i].id+'';
+        if (response.oldId) { //handle ID discrepancies, if any
+          var cell = graph.getCell('' + response[i].oldId);
+          if (cell) {
+            cell.id = '' + response[i].id + '';
           }
-          if(connections.hasOwnProperty(''+response[i].oldId)){
-            connections[''+response[i].id] = response[i].oldId;
-            delete connections[''+response[i].oldId];
+          if (connections.hasOwnProperty('' + response[i].oldId)) {
+            connections['' + response[i].id] = response[i].oldId;
+            delete connections['' + response[i].oldId];
           }
         }
-        /*THIS IS FOR LATER. When I start sending them all in one request.
-        for (var i=0; i<response.length; i++) {
-          console.log(response[i]);
-          if(response[i].oldId){
-            var cell = graph.getCell(''+response[i].oldId);
-            if(cell){
-              cell.id = ''+response[i].id+'';
-            }
-            if(connections.hasOwnProperty(''+response[i].oldId)){
-              connections[''+response[i].id] = response[i].oldId;
-              delete connections[''+response[i].oldId];
-            }
-          }
-        }*/
+        ok++;
+        if (ok == data.length) {
+          savebutton.trigger('saved'); //slightly alcoholic way to trigger the saved confirmation
+        }
       });
     });
-    $("#save").animate({
-      'background-color':'#7BD389'
-    },500).animate({
-      'background-color':'#286090'
-    },500);
   });
-  $("#newNode").click(function(){
+  savebutton.on('saved', function () { //so basically when ok reaches number of sent elements, we flash the button
+    $("#save").animate({
+      'background-color': '#7BD389'
+    }, 500).animate({
+      'background-color': '#286090'
+    }, 500);
+  });
+  //END SAVING MECHANICSM
+
+  $("#newNode").click(function(){ //when newnode is clicked (in the modal)
     var newtext = $("#description").val();
     var wraptext = joint.util.breakText(newtext, {width: 110}); //break text to fit node width
-    var newNode = new joint.shapes.basic.Rect({
+    var newNode = new joint.shapes.basic.Rect({ //make the new element
       position: {x: 200, y: 200},
       size: {width: 130, height: 80},
       props: {
@@ -251,19 +341,23 @@ xhr.always(function(){
   });
 });
 
-$('#chartform').on('shown.bs.modal', function () {
+
+
+$('#chartform').on('shown.bs.modal', function () { //This is a little workaround in Bootstrap modals - forms don't work too well on them otherwise.
   $('input[name="label"]').focus();
 });
+
+//CSRF
 var csrf;
 //since I have CSRF enabled on the server, we gotta request a CSRF token before issuing any other ajax calls.
-$(function () {
+$(function () { //on body load
   $.ajax({
     type: "GET",
-    url: '/csrfToken'
+    url: '/csrfToken' //request CSRF token from sails
   }).done(function (token) {
-    if (token._csrf) {
+    if (token._csrf) { //if recieved: celebrate by drinking alcohol
       csrf = token._csrf
     }
-    else alert("CSRF aquisition failed.");
+    else alert("CSRF aquisition failed."); //if failed: calm yourself by drinking alcohol
   })
 });

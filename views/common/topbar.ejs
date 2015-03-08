@@ -1,17 +1,14 @@
 <!-- Creates the navbar -->
 <nav class="navbar navbar-default navbar-inverse">
 
-  <!-- This creates the mechanism for the collapse button -->
-  <button type="button" class="navbar-toggle" data-toggle="collapse" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
-
-    <!-- This controls the number of lines in the image when the nav collapse -->
+  <!--The ol' squuezed box icon thing LOLOL-->
+  <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu">
     <span class="icon-bar"></span>
     <span class="icon-bar"></span>
     <span class="icon-bar"></span>
   </button>
+  <a class="navbar-brand" href="#">Webflow</a>
 
-  <!-- This is the brand on the left-hand side. -->
-  <a class="navbar-brand" href="/#">The #1 useless website!</a>
   <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
 
     <!-- LOGIN FORM -->
@@ -24,7 +21,8 @@
 
       <!-- P A S S W O R D -->
       <div class="form-group">
-        <input ng-model="loginForm.password" type="password" placeholder="Password" name="password" class="form-control">
+        <input ng-model="loginForm.password" type="password" placeholder="Password" name="password"
+               class="form-control">
       </div>
 
       <!-- S U B M I T -->
@@ -33,7 +31,7 @@
         <span ng-show="loginForm.loading" class="fa fa-spinner"></span>
         <!--<span ng-show="loginForm.loading">Signing up...</span>-->
       </button>
-      <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+      <input type="hidden" name="_csrf" value="<%= _csrf %>"/>
     </form>
   </div>
 </nav>

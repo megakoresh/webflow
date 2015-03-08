@@ -1,15 +1,65 @@
-#signupform{
-//  max-width: 850px;
-  float:none;
+html, body {
+  height: 100%;
 }
 
 body {
   background: rgba(200,200,200,1);
+  overflow: scroll;
 }
-canvas {
+canvas #flowchart { //that was for the old canvas thing.
   background: white;
 }
 
-#savebutton {
-  transition: background-color 0.5s ease-in-out;
+//Positioning stuff for the off-canvas menu
+.navmenu {
+  padding-top: 50px;
+}
+.navbar {
+  display: block;
+  text-align: center;
+}
+.navbar-brand {
+  display: inline-block;
+  position: absolute;
+  float: none;
+}
+.navbar-toggle {
+  position: absolute;
+  float: left;
+  margin-left: 15px;
+}
+
+.container {
+  max-width: 100%;
+}
+
+@media (min-width: 1px) { //I don't really know what this is for,
+  .navbar-toggle {        // but during my research into this technique I always saw this.
+    display: block !important;  //And in the example for the bootstrap extension I used it also exists.
+  }
+}
+
+
+//This is all basically for panning.
+#paper-container {
+  box-shadow: 0 0 10px rgba(111, 111, 111, 0.8) inset;
+  overflow: auto;
+  height: 70rem;
+  cursor: pointer;
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+  cursor: grab;
+}
+
+@media screen and (max-height: 50rem){ //set height for smaller screens
+  #paper-container{
+    height: 50rem;
+  }
+}
+
+@media screen and (max-width: 640px){ //phones
+  #paper-container{
+    height: 100%;
+    width:100%;
+  }
 }
