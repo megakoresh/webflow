@@ -29,4 +29,19 @@ Here I test functionality of Sails and do a lot of prototyping... Nothing to see
 
 + A metric ton of settings in sails to get it all to work together.
 
+###Other resources used
+  + JointJS - used for SVG rendering and interaction
+  + jQuery - used for everything. Too bad it can't be used for love.
+  + Bootstrap - basically an inferior version of Foundation
+  + Jasny Bootstrap extension - adding a little more of Foundation functionality to Boostrap
+  + Underscore.js - you mean you can code without it?! How?
+  + Angular - not for this project
+  + Angular-toastr - not for this project
+  + jQuery UI - for one single function (color animations)
+  + jQuery mobile - for one single event (orientation change)
+  + Hammer.js - for failed attempt to add proper touch support
+  + Paper.js - for my own API before discovery of JointJS that I spent 2 months writing only to find out that all I did was done in a very similar way by JointJS on with SVG instead of canvas. So much for that. But Paper.js is still great.
+  + Sails.js - the best kid around (at least on Node playground). If only it had good learning materials and was googlable...
+
+Sails has this tendency to make you use all the frameworks and libraries ever, because it compiles them automagically. Just drop the file into folder and it will be added to all your necessary pages, and later Grunt will compress and minify them all into single file for production.
 This application is built using [Sails](http://sailsjs.org) v0.11.0
