@@ -21,6 +21,9 @@ module.exports = {
     req.session.currentChart = 1;
     var data = req.params.all();
     var id = data.id; //store id in case it's an old node.
+    if (_.contains(data.targets, id)){
+      data.targets = _.without(data.targets, id);
+    }
     delete data.id;
     /*the reason I do this is because JointJS generates big-ass IDs for it's clientside shenanigans.
      That doesn't fit my requirements so in case this node here is a brand new one (with generated ID),

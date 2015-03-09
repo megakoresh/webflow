@@ -45,8 +45,7 @@ var xhr = $.get('Node/findAllByChart', { //Make a call to fetch the data
         attrs: {
           '.connection': {'stroke-width': 3},
           '.marker-source': {},
-          '.marker-target': {d: 'M 10 0 L 0 5 L 10 10 z', stroke: 'black', fill: 'black'}, //just an arrow path
-          'z-index': -1 //I am not sure this does anything...
+          '.marker-target': {d: 'M 10 0 L 0 5 L 10 10 z', stroke: 'black', fill: 'black'} //just an arrow path
         }
       }),
       validateConnection: function (cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
@@ -198,6 +197,7 @@ var xhr = $.get('Node/findAllByChart', { //Make a call to fetch the data
               'z-index': -1
             }
           });
+          link.toBack();
           links.push(link); //store link
         });
       }
@@ -218,6 +218,7 @@ xhr.always(function(){ //send callback for data fetching
   //For that purpose I use it's events to trigger data changes in the model.
   //This is also the reason it's handlers are attached after the paper's
   graph.on('change:source change:target', function (link) { //Make new connections and be social
+    link.toBack();
     var sourceId = link.get('source').id;
     var targetId = link.get('target').id;
 
@@ -338,7 +339,7 @@ xhr.always(function(){ //send callback for data fetching
           magnet: true //this lets you drag out new connections from this shape
         },
         text: {
-          text: newtext,
+          text: wraptext,
           fill: invertColor("#365C5A"),
           'font-family': 'Arial',
           'font-size': 18,
