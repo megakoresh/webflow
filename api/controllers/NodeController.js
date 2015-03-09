@@ -21,9 +21,10 @@ module.exports = {
     req.session.currentChart = 1;
     var data = req.params.all();
     var id = data.id; //store id in case it's an old node.
-    if (_.contains(data.targets, id)){
-      data.targets = _.without(data.targets, id);
-    }
+    data.targets = _.reject(data.targets, function(tid){
+      return tid.indexOf('-') !== -1
+    });
+
     delete data.id;
     /*the reason I do this is because JointJS generates big-ass IDs for it's clientside shenanigans.
      That doesn't fit my requirements so in case this node here is a brand new one (with generated ID),
@@ -64,6 +65,26 @@ module.exports = {
           req.flash('Error updating:', err);
           console.log(err);
         }
+      }
+    });
+  },
+  removeOne: function(req, res){
+    Node.destroy({id: req.param('id')}, function(err, removedNode){
+      if (err) req.flash('Removal error', err);
+      if(removedNode){
+        Node.find().exec(function(err, nodes){ //remove references in target lists
+          if(err) console.log(err);
+          if(nodes.length>0){
+            console.log(nodes);
+            _.each(nodes,function(node){ //for each node, remove reference if it's there
+              node.targets = _.without(node.targets, ""+req.param('id')+""); //thats just stupid...
+              if(node.targets.length == 0)node.targets.push("");
+              node.save();
+            });
+          }
+        });
+        res.json(removedNode);
+        console.log(removedNode);
       }
     });
   },

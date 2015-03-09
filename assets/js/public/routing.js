@@ -36,8 +36,8 @@ var xhr = $.get('Node/findAllByChart', { //Make a call to fetch the data
     graph = new joint.dia.Graph; //make graph
     var paper = new joint.dia.Paper({ //set up paper
       el: paperEl,
-      width: $("#paper-container").width(),
-      height: $("#paper-container").height(), //we are very responsive like that LOL
+      width: 4000,
+      height: 4000, //we are very responsive like that LOL
       gridSize: 1,
       model: graph,
       defaultLink: new joint.dia.Link({ //default style for links
@@ -142,11 +142,58 @@ var xhr = $.get('Node/findAllByChart', { //Make a call to fetch the data
     });
     //END PANNING LOGIC
 
-    paper.on('cell:pointermove', function(event,x,y){ //on member move adjust paper size
-      paper.fitToContent();//this works similar to strategy games - move cursor to size, view pans to side.
-      //the problem is the sensitivity area of this is very small. I may have to make this logic manual somehow
-      //if the JointJS docs were better I might have done it already
+    //CONTEXT MENU
+    function RightMenuContext(x,y, target){ //when a right click menu is clicked
+      this.target = target;
+      this.open = function(){
+        $(".custom-menu").finish().toggle(100).css({
+          top: y + "px",
+          left: x + "px"
+        });
+      };
+      this.action = function(element) {
+        switch ($(element).attr("data-action")) {
+          case "remove":
+            var index = _.findIndex(data, function (node) { //find index
+              return node.id == target.model.id;
+            });
+            data[index].quedForRemoval = true; //que the node for removal upon save
+            _.each(data, function(node){
+              if(_.contains(node.targets, target.model.id)){
+                node.targets = _.without(node.targets, target.model.id);
+              }
+            });
+            graph.removeLinks(target);
+            target.remove();
+            break;
+          case "edit":
+            //edit logic here. Edit text, color and size.
+            //Need substantial UI code for this if I am to make it look... OK at least.
+            //Before implementing this I need to namespace the app
+            //and separate it properly to avoid even further clusterfuck.
+            break;
+        }
+        // Hide it AFTER the action was triggered
+        $(".custom-menu").hide(100);
+      }
+    }
+    var rmc; //expose the right menu context variable for multiple event handlers
+    paper.$el.on('contextmenu', function(event){
+      event.stopPropagation();
+      var cellView = paper.findView(event.target);
+      if(cellView){
+        event.preventDefault();
+        rmc = new RightMenuContext(event.pageX, event.pageY, cellView);
+        rmc.open();
+    }
     });
+    $(document).bind("mousedown", function (event) {
+      // Need this to close the custom right click menu
+      if (!$(event.target).parents(".custom-menu").length > 0) {
+        $(".custom-menu").hide(100);
+      }
+    });
+    $(".custom-menu li").click(function(){rmc.action(this)});
     //END PAPER UI INTERACTIONS
 
     //CONSTRUCT GRAPHICS FROM DATA
@@ -205,7 +252,7 @@ var xhr = $.get('Node/findAllByChart', { //Make a call to fetch the data
 
     graph.addCells(shapenodes); //add nodes
     graph.addCell(links); //add links
-    paper.fitToContent();
+    //paper.fitToContent();
     //END GRAPHICS FROM DATA
   }
   //END WALL OF CODE
@@ -265,7 +312,6 @@ xhr.always(function(){ //send callback for data fetching
   });
 
   graph.on('add', function (cell) { //on cell addition...
-    console.log(cell);
     if (cell.attributes.props && cell.attributes.props.node) { //if it's a node cell (i.e. not a link)
       var celldata = { //make data
         x: cell.attributes.position.x,
@@ -294,29 +340,45 @@ xhr.always(function(){ //send callback for data fetching
     data.forEach(function (node) { //for all data entries (temp, I will send full array and do the separation serverside later)
       if (csrf) node._csrf = csrf; //embed csrf token
       if (node.targets.length == 0) node.targets.push(null); //due to ajax being stupid, it won't send empty arrays. So I use this hack and do serverside check to empty the record.
+      if(!node.quedForRemoval){
       $.post('Node/saveOne', node).done(function (response) {
-        if (response.oldId) { //handle ID discrepancies, if any
-          var cell = graph.getCell('' + response[i].oldId);
-          if (cell) {
-            cell.id = '' + response[i].id + '';
+          if (response.oldId) { //handle ID discrepancies, if any
+            var cell = graph.getCell('' + response.oldId);
+            if (cell) {
+              cell.id = '' + response.id + '';
+            }
+            if (connections.hasOwnProperty('' + response.oldId)) {
+              connections['' + response.id] = response.oldId;
+              delete connections['' + response.oldId];
+            }
           }
-          if (connections.hasOwnProperty('' + response[i].oldId)) {
-            connections['' + response[i].id] = response[i].oldId;
-            delete connections['' + response[i].oldId];
-          }
-        }
         ok++;
         if (ok == data.length) {
           savebutton.trigger('saved'); //slightly alcoholic way to trigger the saved confirmation
         }
-      });
+        });
+      } else if(node.quedForRemoval){
+        $.post('Node/removeOne', {
+          id: node.id,
+          _csrf: csrf
+        }).done(function (response) {
+          //console.log(response);
+          if (response[0].id) {
+            console.log('Node \"'+response[0].label+'\" removed successfully');
+          }
+          ok++;
+          if (ok == data.length) {
+            savebutton.trigger('saved'); //slightly alcoholic way to trigger the saved confirmation
+          }
+        });
+      }
     });
   });
   savebutton.on('saved', function () { //so basically when ok reaches number of sent elements, we flash the button
     $("#save").animate({
       'background-color': '#7BD389'
     }, 500).animate({
-      'background-color': '#286090'
+      'background-color': '#f8f8f8'
     }, 500);
   });
   //END SAVING MECHANICSM
@@ -326,7 +388,7 @@ xhr.always(function(){ //send callback for data fetching
     var wraptext = joint.util.breakText(newtext, {width: 110}); //break text to fit node width
     var newNode = new joint.shapes.basic.Rect({ //make the new element
       position: {x: 200, y: 200},
-      size: {width: 130, height: 80},
+      size: {width: $("#width").val(), height: $("#height").val()},
       props: {
         node: true
       },

@@ -9,13 +9,13 @@
     </button>
   <article id='info' class="collapse col-xs-12 well">
     You can drag the shapes around by tapping or clicking on text for now (maybe I will add separate handlers), add and remove links (figure it out, it's easy) and (hopefully) save the diagram.
-    Node insertion, even if it works, will be disabled because I haven't quite figured out the security features of Sails yet and don't know how to implement them.
+    Node insertion, even if it works, will be disabled (max limit set) because I haven't quite figured out the security features of Sails yet and don't know how to implement them.
     <br><h4>TODO:</h4>
     <ul class="panel">
       <li>Drag and drop UI for nodes</li>
       <li>Edit text inside nodes on double-click/tap(this is gonna be tricky...)</li>
-      <li>Ajax saving feedback (for this I need to figure out proper sockets setup)</li>
-      <li>Zoom and panning</li>
+      <li>Proper Ajax saving feedback (for this I need to figure out proper sockets setup)</li>
+      <li>Zoom</li>
       <li>Color editing</li>
     </ul>
   </article>
@@ -40,8 +40,21 @@
             <textarea class="form-control" id="description" placeholder="Text to display on the node" rows="1"
                       name="text"></textarea>
           </div>
+        <div class="form-group">
+          <label for="lable">Width</label>
+          <input type="number" class="form-control" id="width" placeholder="150" value="130" name="width">
+        </div>
+        <div class="form-group">
+          <label for="lable">Height</label>
+          <input type="number" class="form-control" id="height" placeholder="85" value="85" name="height">
+        </div>
           <button class="btn btn-default" id="newNode">Make node</button>
       </div>
     </div>
   </div>
 </div>
+
+<ul class='custom-menu'>
+  <li data-action="remove">Remove</li>
+  <li data-action="edit">Edit</li>
+</ul>
