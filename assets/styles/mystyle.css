@@ -8,6 +8,12 @@ body {
 canvas #flowchart {
   background: white; }
 
+#paper > svg {
+  background-color: #506677;
+  background-image: linear-gradient(#979797 2px, transparent 2px), linear-gradient(90deg, #979797 2px, transparent 2px), linear-gradient(rgba(255, 255, 255, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.3) 1px, transparent 1px);
+  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+  background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px; }
+
 .custom-menu {
   display: none;
   z-index: 1000;
@@ -41,6 +47,9 @@ canvas #flowchart {
   display: inline-block;
   position: absolute;
   float: none; }
+  @media screen and (max-width: 1215px) {
+    .navbar-brand {
+      display: none; } }
 
 .navbar-toggle {
   position: absolute;

@@ -10,6 +10,16 @@ canvas #flowchart { //that was for the old canvas thing.
   background: white;
 }
 
+#paper>svg{
+  background-color: #506677;
+  background-image: linear-gradient(#979797 2px, transparent 2px),
+  linear-gradient(90deg, #979797 2px, transparent 2px),
+  linear-gradient(rgba(255,255,255,.3) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(255,255,255,.3) 1px, transparent 1px);
+  background-size:100px 100px, 100px 100px, 20px 20px, 20px 20px;
+  background-position:-2px -2px, -2px -2px, -1px -1px, -1px -1px
+}
+
 //RIGHT CLICK MENU
 .custom-menu {
   display: none;
@@ -49,6 +59,9 @@ canvas #flowchart { //that was for the old canvas thing.
   display: inline-block;
   position: absolute;
   float: none;
+  @media screen and (max-width: 1215px){ //hide the brand on narrow screercs
+    display:none;
+  }
 }
 .navbar-toggle {
   position: absolute;

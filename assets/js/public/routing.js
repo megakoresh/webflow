@@ -64,7 +64,14 @@ var xhr = $.get('Node/findAllByChart', { //Make a call to fetch the data
     });
 
     $(window).on('orientationchange resize', function(){
-      paper.fitToContent();
+      $.fn.redraw = function(){
+        $(this).each(function(){
+          var redraw = this.offsetHeight;
+        });
+        return $(this);
+      };
+      $("#paper-container").redraw();
+      paper.setDimensions(4000,4000); //paper.fitToContent();
     });
 
     //TODO: somehow get the zoom to work (no idea how)
@@ -107,7 +114,7 @@ var xhr = $.get('Node/findAllByChart', { //Make a call to fetch the data
 
     $('#reset').click(function(){ //the most useful one.
       paper.scale(1,1);
-      paper.setDimensions($("#paper-container").width(), $("#paper-container").height())
+      paper.setDimensions(4000,4000); //($("#paper-container").width(), $("#paper-container").height())
     });//the usability of this app is measured in the frequency of usage of this button.
 
     //DO YOU EVEN PAN BRO
