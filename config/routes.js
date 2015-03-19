@@ -32,10 +32,11 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
   'GET /':{
-    view: 'panel'
+    view: 'index'
   },
-  'GET /flowchart': {
-    view: 'flowchart'
+  'GET /login': {
+    controller: 'UserController',
+    action: 'login'
   },
   'GET /signup':{
     controller: 'UserController',

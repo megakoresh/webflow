@@ -1,24 +1,23 @@
 /**
-* Chart.js
+* Post.js
 *
 * @description :: TODO: You might write a short summary of how this model works and what it represents here.
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
 
 module.exports = {
-  schema: true,
+
   attributes: {
-    nodes: {
-      collection: 'Node',
-      via: 'Chart'
+    userID: {
+      model: 'user'
     },
-    label: {
+    content: {
       type: 'string',
-      defaultsTo: 'A brand new diagram'
+      required: 'true'
     },
-    description: {
-      type: 'string',
-      defaultsTo: ''
+    NSFW: {
+      type: 'boolean',
+      defaultsTo: false
     }
   }
 };

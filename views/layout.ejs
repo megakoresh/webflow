@@ -1,60 +1,65 @@
+<%
+ //For setting up dynamic content we need some variable that's gonna store current location'n shit
+ var location = {
+   view: 'index',
+   menuTitle: 'Koreshnet'
+ }
+  %>
+
 <!DOCTYPE html>
-<html>
-<head>
-  <title>Webflow</title>
-  <!--Once the data interaction is done, the title should be changed based on session and the current view-->
-  <!-- Viewport mobile tag for sensible mobile support. -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <!--STYLES-->
-  <link rel="stylesheet" href="/styles/angular-toastr.css">
-  <link rel="stylesheet" href="/styles/bootstrap-theme.min.css">
-  <link rel="stylesheet" href="/styles/bootstrap.min.css">
-  <link rel="stylesheet" href="/styles/importer.css">
-  <link rel="stylesheet" href="/styles/jasny-bootstrap.css">
-  <link rel="stylesheet" href="/styles/jasny-bootstrap.min.css">
-  <link rel="stylesheet" href="/styles/joint.css">
-  <link rel="stylesheet" href="/styles/jquery-ui.css">
-  <link rel="stylesheet" href="/styles/jquery-ui.structure.css">
-  <link rel="stylesheet" href="/styles/jquery-ui.theme.css">
-  <link rel="stylesheet" href="/styles/mystyle.css">
-  <!--STYLES END-->
-</head>
-<body class="container-fluid">
-<nav class="navmenu navmenu-default navmenu-fixed-left offcanvas-lg">
-  <a class="navmenu-brand" href="#">Edit diagram</a>
-  <ul class="nav navmenu-nav">
-    <li><a href="#" data-toggle="modal" data-target="#newnode">New node</a></li>
-    <li><a href="#" id="save">Save diagram</a></li>
-    <li><a href="#" id="center">Scale diagram to view</a></li>
-    <li><a href="#" id="scale">Scale diagram to content</a></li>
-    <li><a href="#" id="reset">Reset diagram</a></li>
-  </ul>
-</nav>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Koreshnet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-<% include common/topbar %>
-<section class="container">
-  <%- body %>
-</section>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
-<!--SCRIPTS-->
-<script src="/js/dependencies/sails.io.js"></script>
-<script src="/js/dependencies/underscore-min.js"></script>
-<script src="/js/dependencies/angular.min.js"></script>
-<script src="/js/dependencies/joint.js"></script>
-<script src="/js/dependencies/angular-toastr.js"></script>
-<script src="/js/dependencies/bootstrap.js"></script>
-<script src="/js/dependencies/compareTo.module.js"></script>
-<script src="/js/dependencies/hammer.js"></script>
-<script src="/js/dependencies/jasny-bootstrap.js"></script>
-<script src="/js/dependencies/joint.layout.DirectedGraph.js"></script>
-<script src="/js/dependencies/joint.shapes.devs.js"></script>
-<script src="/js/dependencies/jquery-2.1.3.min.js"></script>
-<script src="/js/dependencies/jquery-ui.js"></script>
-<script src="/js/dependencies/paper-full.js"></script>
-<script src="/js/public/signup/SignupModule.js"></script>
-<script src="/js/public/routing.js"></script>
-<script src="/js/public/signup/SignupController.js"></script>
-<script src="/js/public/ui.js"></script>
-<!--SCRIPTS END-->
-</body>
+    <!--STYLES-->
+    <link rel="stylesheet" href="/styles/angular-toastr.css">
+    <link rel="stylesheet" href="/styles/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/styles/bootstrap.min.css">
+    <link rel="stylesheet" href="/styles/importer.css">
+    <link rel="stylesheet" href="/styles/jasny-bootstrap.css">
+    <link rel="stylesheet" href="/styles/jasny-bootstrap.min.css">
+    <link rel="stylesheet" href="/styles/joint.css">
+    <link rel="stylesheet" href="/styles/jquery-ui.css">
+    <link rel="stylesheet" href="/styles/jquery-ui.structure.css">
+    <link rel="stylesheet" href="/styles/jquery-ui.theme.css">
+    <link rel="stylesheet" href="/styles/mystyle.css">
+    <!--STYLES END-->
+  </head>
+
+  <body>
+  <% include common/offcanvas %>
+    <div id="content"> <!--Main wrapper-->
+      <% include common/topbar %>
+        <%- body %>
+    </div>
+
+    <div id="footer">
+
+    </div>
+
+    <!--SCRIPTS-->
+    <script src="/js/dependencies/sails.io.js"></script>
+    <script src="/js/dependencies/underscore-min.js"></script>
+    <script src="/js/dependencies/angular.min.js"></script>
+    <script src="/js/dependencies/joint.js"></script>
+    <script src="/js/dependencies/angular-toastr.js"></script>
+    <script src="/js/dependencies/bootstrap.js"></script>
+    <script src="/js/dependencies/compareTo.module.js"></script>
+    <script src="/js/dependencies/hammer.js"></script>
+    <script src="/js/dependencies/jasny-bootstrap.js"></script>
+    <script src="/js/dependencies/joint.layout.DirectedGraph.js"></script>
+    <script src="/js/dependencies/joint.shapes.devs.js"></script>
+    <script src="/js/dependencies/jquery-2.1.3.min.js"></script>
+    <script src="/js/dependencies/jquery-ui.js"></script>
+    <script src="/js/dependencies/paper-full.js"></script>
+    <script src="/js/public/signup/SignupModule.js"></script>
+    <script src="/js/public/signup/SignupController.js"></script>
+    <!--SCRIPTS END-->
+  </body>
 </html>

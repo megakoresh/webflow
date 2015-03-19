@@ -1,0 +1,27 @@
+<div class="container">
+  <div class="row">
+    <div class="span6">
+      <p>Browse the database tables below and select one to see the data stored inside.</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="span12">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Database Table</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% tables.forEach(function(table) { %>
+          <tr>
+            <td><a href="/tables/<%= table %>?limit=10&skip=0"><%= table %></a></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

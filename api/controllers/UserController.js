@@ -22,7 +22,12 @@ module.exports = {
           if (match) {
             // password match
             req.session.user = user.id;
-            res.json(req.session.user);
+            res.view('panel',{
+              username: user.username,
+              email: user.email,
+              avatar: user.avatar,
+
+            });
           } else {
             // invalid password
             if (req.session.user) req.session.user = null;
@@ -39,16 +44,37 @@ module.exports = {
     return res.redirect("/signup");
   },
   create: function(req,res,next){
-    User.create(req.params.all(), function userCreated(err,user){
-      if (req.param("password") != req.param("confirmation")){
-        return next("Fucking check your fucking password you fucktard!!!!");
-      } 
+    var params = req.params.all();
+    if (params.password != params.confirmation){
+      req.flash("Passowrds don't match");
+      return res.redirect('/signup');
+    }
+    var Gravatar = require('machinepack-gravatar');
+    // Build the URL of a gravatar image for a particular email address.
+    Gravatar.getImageUrl({
+      emailAddress: params.email,
+      gravatarSize: 400,
+      defaultImage: 'http://www.gravatar.com/avatar/00000000000000000000000000000000',
+      rating: 'g',
+      useHttps: true
+    }).execSync({
+      'error': function(){
+        params.avatar = 'http://www.gravatar.com/avatar/00000000000000000000000000000000'
+      },
+      'encodingFailed': function(){
+        params.avatar = 'http://www.gravatar.com/avatar/00000000000000000000000000000000'
+      },
+      'success': function(imgUrl){
+        params.avatar = imgUrl
+      }
+    });
+    User.create(params, function userCreated(err,user){
       if(err){
         req.flash('err',err.ValidationError);
         return res.redirect('/signup');
       }
       return res.json(user);
-    })
+    });
   }
 };
 

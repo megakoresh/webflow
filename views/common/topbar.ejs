@@ -7,29 +7,19 @@
     <span class="icon-bar"></span>
     <span class="icon-bar"></span>
   </button>
-  <a class="navbar-brand" href="#">Webflow</a>
+  <a class="navbar-brand" href="#">Koreshnet</a>
 
-  <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
-
-    <!-- LOGIN FORM -->
-    <form ng-submit="submitLoginForm()" class="navbar-form navbar-right">
-
-      <!-- E M A I L -->
+  <div class="collapse navbar-collapse">
+    <form class="navbar-form navbar-right" action="<%%>signup" method="post">
       <div class="form-group">
-        <input ng-model="loginForm.email" type="text" placeholder="Email" name="email" class="form-control">
+        <input type="text" placeholder="usrname" name="username" class="form-control">
       </div>
-
-      <!-- P A S S W O R D -->
       <div class="form-group">
-        <input ng-model="loginForm.password" type="password" placeholder="Password" name="password"
-               class="form-control">
+        <input type="password" placeholder="Password" name="password" class="form-control">
       </div>
-
       <!-- S U B M I T -->
       <button type="submit" class="btn btn-success">
-        <span ng-show="!loginForm.loading">Sign in</span>
-        <span ng-show="loginForm.loading" class="fa fa-spinner"></span>
-        <!--<span ng-show="loginForm.loading">Signing up...</span>-->
+        <span>Sign in</span>
       </button>
       <input type="hidden" name="_csrf" value="<%= _csrf %>"/>
     </form>

@@ -1,0 +1,106 @@
+<div class="container" ng-controller="Table">
+  <div class="row">
+    <div class="span6">
+      <p><a href="/tables" class="btn btn-success">Back to tables</a></p>
+      <p>Browsing records for table: <strong><%= table %></strong>.</p>
+      <p>Total Records: <strong><%= count %></strong></p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="span12">
+      <table class="table table-hover">
+        <thead>
+          <% var columns = _.keys(records[0]) %>
+          <% columns.forEach(function(column) { %>
+            <th ng-click="sort('<%= column %>')"><%= column %> <i class="fa fa-sort"></i></th>
+          <%})%>
+        </thead>
+
+        <tbody>
+
+          <% records.forEach(function(row) { %>
+          <tr>
+            <% columns.forEach(function(column) { %>
+            <td><%= row[column] %></td>
+            <%})%>
+          </tr>
+          <%})%>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="span12">
+      <nav>
+        <ul class="pagination">
+
+          <!-- Pages -->
+          <% var limit = Number(req.param('limit')); %>
+          <% var skip = Number(req.param('skip')); %>
+          <% var sort = req.param('sort'); %>
+          <% var pageCount = Math.ceil(count / limit); %>
+          <% var currentPage = Math.floor((skip + limit)/limit); %>
+
+          <% if(!skip) { %>
+            <li class="disabled">
+              <a href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+          <% } else { %>
+            <% if(sort) { %>
+              <li>
+                <a href="/tables/<%= table %>?limit=<%= limit %>&skip=<%= (skip - limit) %>&sort=<%=sort%>" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+            <% } else { %>
+              <li>
+                <a href="/tables/<%= table %>?limit=<%= limit %>&skip=<%= (skip - limit) %>" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+            <%}%>
+          <% } %>
+
+          <% for(var i = 1; i<=pageCount; i++) { %>
+            <% if(i === currentPage) { %>
+              <li class="active"><a href="#"><%=i%></a></li>
+            <%} else { %>
+              <% if(sort) { %>
+                <li><a href="/tables/<%= table %>?limit=<%= limit %>&skip=<%= Math.floor(limit * (i-1)) %>&sort=<%=sort%>"><%=i%></a></li>
+              <%} else { %>
+                <li><a href="/tables/<%= table %>?limit=<%= limit %>&skip=<%= Math.floor(limit * (i-1)) %>"><%=i%></a></li>
+              <%}%>
+            <%}%>
+          <%}%>
+
+           <% if(currentPage === pageCount) { %>
+            <li class="disabled">
+              <a href="#" aria-label="Previous">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          <% } else { %>
+            <% if(sort) { %>
+              <li>
+                <a href="/tables/<%= table %>?limit=<%= limit %>&skip=<%= (skip + limit) %>&sort=<%=sort%>" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            <% } else { %>
+              <li>
+                <a href="/tables/<%= table %>?limit=<%= limit %>&skip=<%= (skip + limit) %>" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            <%}%>
+          <% } %>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
