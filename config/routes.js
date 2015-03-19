@@ -34,11 +34,11 @@ module.exports.routes = {
   'GET /':{
     view: 'index'
   },
-  'GET /login': {
+  'POST /login': {
     controller: 'UserController',
     action: 'login'
   },
-  'GET /signup':{
+  'POST /signup':{
     controller: 'UserController',
     action: 'signup'
   }

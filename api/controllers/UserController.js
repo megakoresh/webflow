@@ -11,7 +11,7 @@ module.exports = {
   },
   login: function (req, res) {
     var bcrypt = require('bcrypt');
-
+	console.log('Hi');
     User.findOneByEmail(req.param("email")).exec(function (err, user) {
       if (err) res.json({ error: 'DB error' }, 500);
 
@@ -20,13 +20,12 @@ module.exports = {
           if (err) res.json({ error: 'Server error' }, 500);
 
           if (match) {
-            // password match
+            // password match			
             req.session.user = user.id;
             res.view('panel',{
               username: user.username,
               email: user.email,
-              avatar: user.avatar,
-
+              avatar: user.avatar
             });
           } else {
             // invalid password
@@ -35,7 +34,7 @@ module.exports = {
           }
         });
       } else {
-        res.json({ error: 'User not found' }, 404);
+        res.send('<h2>User not found WTFLOL!</h2>');
       }
     });
   },
@@ -57,23 +56,37 @@ module.exports = {
       defaultImage: 'http://www.gravatar.com/avatar/00000000000000000000000000000000',
       rating: 'g',
       useHttps: true
-    }).execSync({
+    }).exec({
       'error': function(){
-        params.avatar = 'http://www.gravatar.com/avatar/00000000000000000000000000000000'
+        params.avatar = 'http://www.gravatar.com/avatar/00000000000000000000000000000000';
+		User.create(params, function userCreated(err,user){
+		  if(err){
+			req.flash('err',err.ValidationError);
+			return res.redirect('/signup');
+		  }
+		  return res.json(user);
+		});
       },
       'encodingFailed': function(){
-        params.avatar = 'http://www.gravatar.com/avatar/00000000000000000000000000000000'
+        params.avatar = 'http://www.gravatar.com/avatar/00000000000000000000000000000000';
+		User.create(params, function userCreated(err,user){
+		  if(err){
+			req.flash('err',err.ValidationError);
+			return res.redirect('/signup');
+		  }
+		  return res.json(user);
+		});
       },
       'success': function(imgUrl){
-        params.avatar = imgUrl
+        params.avatar = imgUrl;
+		User.create(params, function userCreated(err,user){
+		  if(err){
+			req.flash('err',err.ValidationError);
+			return res.redirect('/signup');
+		  }
+		  return res.json(user);
+		});
       }
-    });
-    User.create(params, function userCreated(err,user){
-      if(err){
-        req.flash('err',err.ValidationError);
-        return res.redirect('/signup');
-      }
-      return res.json(user);
     });
   }
 };
