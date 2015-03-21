@@ -10,7 +10,7 @@ module.exports = {
     res.view('signup');
   },
   login: function (req, res) {
-    var bcrypt = require('bcrypt');
+    var bcrypt = require('bcryptjs');
 	console.log('Hi');
     User.findOneByEmail(req.param("email")).exec(function (err, user) {
       if (err) res.json({ error: 'DB error' }, 500);
