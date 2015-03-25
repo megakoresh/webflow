@@ -38,7 +38,7 @@ module.exports.routes = {
     controller: 'UserController',
     action: 'login'
   },
-  'POST /signup':{
+  'GET /signup':{
     controller: 'UserController',
     action: 'signup'
   }
