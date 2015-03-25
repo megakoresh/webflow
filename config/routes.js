@@ -34,6 +34,10 @@ module.exports.routes = {
   'GET /':{
     view: 'index'
   },
+  'GET /panel': {
+    controller: 'UserController',
+    action: 'displayPanel'
+  },
   'POST /login': {
     controller: 'UserController',
     action: 'login'

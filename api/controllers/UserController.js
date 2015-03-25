@@ -9,6 +9,15 @@ module.exports = {
   signup: function(req,res){
     res.view('signup');
   },
+  update: function(req, res){
+    if(req.session.user !== undefined) {
+      var newData = req.param('user');
+      
+      User.update({id: req.session.user}).exec(function(err, user){
+      
+      })
+    }
+  },
   login: function (req, res) {
     var bcrypt = require('bcryptjs');
 	console.log('Hi');
@@ -22,11 +31,12 @@ module.exports = {
           if (match) {
             // password match			
             req.session.user = user.id;
-            res.view('panel',{
+            return res.redirect('/panel');            
+            /*res.view('panel',{
               username: user.username,
               email: user.email,
               avatar: user.avatar
-            });
+            });*/
           } else {
             // invalid password
             if (req.session.user) req.session.user = null;
@@ -41,6 +51,20 @@ module.exports = {
   logout: function(req,res){
     req.session = null;
     return res.redirect("/signup");
+  },
+  displayPanel: function(req, res){
+    if(req.session.user !== undefined) {
+      User.findOneById(req.session.user).exec(function(err, user){
+        if (err) return res.negotiate(err);
+        
+        if (user){
+          delete user.password;
+          return res.view('panel',user);
+        }
+      });
+    } else {
+      return res.send('NOT SESSION EEZ BAD!');
+    }
   },
   create: function(req,res,next){
     var params = req.params.all();
@@ -59,33 +83,35 @@ module.exports = {
     }).exec({
       'error': function(){
         params.avatar = 'http://www.gravatar.com/avatar/00000000000000000000000000000000';
-		User.create(params, function userCreated(err,user){
-		  if(err){
-			req.flash('err',err.ValidationError);
-			return res.redirect('/signup');
-		  }
-		  return res.json(user);
-		});
+	User.create(params, function userCreated(err,user){
+	  if(err){
+		req.flash('err',err.ValidationError);
+		return res.redirect('/signup');
+	  }
+	  res.location('/panel');
+	  return res.view('panel');
+	});
       },
-      'encodingFailed': function(){
-        params.avatar = 'http://www.gravatar.com/avatar/00000000000000000000000000000000';
-		User.create(params, function userCreated(err,user){
-		  if(err){
-			req.flash('err',err.ValidationError);
-			return res.redirect('/signup');
-		  }
-		  return res.json(user);
-		});
+      'encodingFailed': function(){        
+	User.create(params, function userCreated(err,user){
+	  if(err){
+		req.flash('err',err.ValidationError);
+		return res.redirect('/signup');
+	  }
+          res.location('/panel');
+	  return res.view('panel');
+	});
       },
       'success': function(imgUrl){
         params.avatar = imgUrl;
-		User.create(params, function userCreated(err,user){
-		  if(err){
-			req.flash('err',err.ValidationError);
-			return res.redirect('/signup');
-		  }
-		  return res.json(user);
-		});
+	User.create(params, function userCreated(err,user){
+	  if(err){
+		req.flash('err',err.ValidationError);
+		return res.redirect('/signup');
+	  }
+	  res.location('/panel');
+	  return res.view('panel');
+	});
       }
     });
   }

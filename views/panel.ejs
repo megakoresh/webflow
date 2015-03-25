@@ -1,2 +1,8 @@
-<% var hello = "User panel"; %>
-<h3><%- hello %></h3>
+<div class="pagecontent">
+<h3 id='name'><span><%- username %></span> <button class="btn btn-default" onclick="toForm('#name')">Change</button></h3>
+<p id='email' class='well'><span><%- email %></span><button class="btn btn-default" onclick="toForm('#email')">Change</button></p>
+<button class='btn btn-default' id='password'>Change password</button><br>
+<img src="<%- avatar %>" alt="Pootsiname's avatar"/><br>
+<button class='btn btn-default' id='edit'>Edit your details</button><br>
+<button class='btn btn-primary' id='save'>Save changes</button>
+</div>
