@@ -1,5 +1,7 @@
 # Sanbox
-Here I test functionality of Sails and do a lot of prototyping... Nothing to see here!
+Project for mobile programming course.
+
+Application is called Webflow. It's a mobile-ready flowchart web-app built using JointJS - a front-end SVG framework.
 
 ##For the teacher
 ####Files I modified:
