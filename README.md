@@ -1,5 +1,4 @@
-# Sanbox
-Project for mobile programming course.
+###Project for mobile programming course.
 
 Application is called Webflow. It's a mobile-ready flowchart web-app built using JointJS - a front-end SVG framework.
 
